@@ -1,0 +1,18 @@
+#!ipxe
+dhcp
+set webserver https://drive.proton.me/urls/ER1EE9210M#6UbpXY68PAUD
+set pveversion 9.0
+set opts "vga=791 video=vesafb:ywrap,mtrr ramdisk_size=16777216 rw quiet initrd=initrd hv_sps_metadata_url={metadata_url}"
+menu Please choose an operating system to boot
+item normal Install Proxmox VE 9.0
+item debug Install Proxmox VE 9.0 (Debug Mode)
+choose --default normal --timeout 5000 target && goto ${target}
+:debug
+set kernel "${webserver}/linux26 ${opts} splash=verbose proxdebug"
+goto init
+:normal
+set kernel "${webserver}/linux26 ${opts} splash=silent"
+goto init
+:init
+initrd ${webserver}/initrd
+chain ${kernel}
